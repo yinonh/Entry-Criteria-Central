@@ -10,5 +10,6 @@ class Admission:
         self.notes = notes
         self.date = date
 
+
     def get_mongo(self):
         return dict(vars(self))

@@ -1,8 +1,9 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, DESCENDING, ASCENDING
 from bs4 import BeautifulSoup
 import requests
 from .Admission import Admission
 import datetime
+
 
 class Data:
 
@@ -41,17 +42,69 @@ class Data:
             all_professions.extend(names)
         return all_professions
 
-    def get_all_data(self, names):
+    def get_the_min_and_max(self):
+        # Connect to the MongoDB server
+        client = MongoClient("mongodb://localhost:27017/")
+        db = client["mydatabase"]
+
+        # Define the collections to query
+        collections =['BGU', 'EVR', 'TECH', 'TLV']
+
+        institutions_dict = {}
+
+        # Iterate over the collections and find the max and min values of sum and psychometric
+        for collection_name in collections:
+            collection = db[collection_name]
+
+            institutions_dict[collection_name] = {}
+            institutions_dict[collection_name]['max_sum'] = collection.find_one(sort=[("sum", DESCENDING)])["sum"] if not collection.find_one(sort=[("sum", DESCENDING)])["sum"] is None else 0
+            institutions_dict[collection_name]['min_sum'] = collection.find_one(sort=[("sum", ASCENDING)])["sum"] if not collection.find_one(sort=[("sum", ASCENDING)])["sum"] is None else 0
+            institutions_dict[collection_name]['max_psy'] = collection.find_one(sort=[("psychometric", DESCENDING)])["psychometric"] if not collection.find_one(sort=[("psychometric", DESCENDING)])["psychometric"] is None else 0
+            institutions_dict[collection_name]['min_psy'] = collection.find_one(sort=[("psychometric", ASCENDING)])["psychometric"] if not collection.find_one(sort=[("psychometric", ASCENDING)])["psychometric"] is None else 0
+
+        return institutions_dict
+
+    def comper(self, result):
+        min_max = self.get_the_min_and_max()
+        score = 0
+        if not result['sum'] is None:
+            sum = (result['sum'] - min_max[result['institutions']]['min_sum']) * (100 - 1) / (min_max[result['institutions']]['max_sum'] - min_max[result['institutions']]['min_sum']) + 1
+        else:
+            sum = 0
+
+        if not result['psychometric'] is None:
+            psychometric = (result['psychometric'] - min_max[result['institutions']]['min_psy']) * (100 - 1) / (min_max[result['institutions']]['max_psy'] - min_max[result['institutions']]['min_sum']) + 1
+        else:
+            psychometric = 0
+
+        additional = result['additional'] if not result['additional'] is None else False
+        min_final_grade_average = result['min_final_grade_average'] if not result['min_final_grade_average'] is None else 0
+        without = True if not result['without'] is None else False
+        score += sum + psychometric
+        if additional:
+            score -= 50
+        if min_final_grade_average:
+            score += 10
+        if without:
+            score -= 10
+        return score
+
+    def get_all_data(self, names, collection_names, sort):
         client = MongoClient('mongodb://localhost:27017')
 
         # initialize a list to hold all the matching documents
-        matching_docs = {}
+        matching_docs = []
 
         # iterate over each collection and find all documents with a name in the list
-        for collection_name in client['mydatabase'].list_collection_names():
+        for collection_name in collection_names:
             collection = client['mydatabase'][collection_name]
             docs = collection.find({'name': {'$in': names}})
-            matching_docs[collection_name] = docs
+            for d in docs:
+                d["institutions"] = collection_name
+                matching_docs.append(d)
+
+        if sort:
+            matching_docs = sorted(matching_docs, key=self.comper, reverse=True)
 
         return matching_docs
 
@@ -103,9 +156,10 @@ class Data:
             else:
                 additional = False
                 psychometric = pcy_and_or.strip()
+            without = cols[3].text.strip() if cols[3].text.strip() != '' else None
             result = Admission(name=cols[0].text.strip(), sum=self.convert_to_num(cols[1].text),
                                psychometric=self.convert_to_num(psychometric),
-                               additional=additional, without=cols[3].text.strip(), notes=cols[4].text.strip(),
+                               additional=additional, without=without, notes=cols[4].text.strip(),
                                date=datetime.datetime.today().strftime('%d/%m/%Y'))
 
             data.append(result.get_mongo())
@@ -126,7 +180,7 @@ class Data:
             try:
                 result = Admission(name=cols[0].text.strip(), sum=self.convert_to_num(cols[1].text),
                                    min_final_grade_average=self.convert_to_num(cols[2].text),
-                                   additional=True, psychometric=cols[3].text.strip(), notes=cols[4].text.strip(),
+                                   additional=True, psychometric=self.convert_to_num(cols[3].text), notes=cols[4].text.strip(),
                                    date=datetime.datetime.today().strftime('%d/%m/%Y'))
             except:
                 continue
@@ -198,25 +252,10 @@ class Data:
 
             data.append(result.get_mongo())
 
-        self.insert_data(data, 'EVR ')
+        self.insert_data(data, 'EVR')
 
     def update_all(self):
         self.bgu_data()
         self.tech_data()
         self.tlv_uni_data()
         self.evrit_uni_data()
-
-
-# client = MongoClient('mongodb://localhost:27017/')
-#
-# # access the database
-# db = client['mydatabase']
-#
-# # # access a collection (table)
-# collection = db['BGU']
-#
-# query = {'name': 'אמנויות'}
-# results = collection.find(query)
-#
-# for doc in results:
-#     print(doc)

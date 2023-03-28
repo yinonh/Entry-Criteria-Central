@@ -16,6 +16,7 @@ class Managment:
     def __init__(self, *args, **kwargs):
         super(Managment, self).__init__(*args, **kwargs)
         self.data = Data()
+        #self.data.update_all()
 
         st.set_page_config(page_title="My Streamlit App", page_icon="Assets/icon.ico")#, layout="wide")
 
