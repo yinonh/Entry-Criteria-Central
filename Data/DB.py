@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 from .Admission import Admission
 import datetime
+import random
 
 
 class Data:
@@ -12,7 +13,7 @@ class Data:
 
     def compare_dicts(self, dict1, dict2):
         for key in dict1:
-            if key == '_id' or 'date' or (dict1[key] is None and dict2[key] is None):
+            if key == '_id' or key == 'date' or (dict1[key] is None and dict2[key] is None):
                 continue
             elif dict1[key] != dict2[key]:
                 return False
@@ -48,7 +49,7 @@ class Data:
         db = client["mydatabase"]
 
         # Define the collections to query
-        collections =['BGU', 'EVR', 'TECH', 'TLV']
+        collections = ['BGU', 'EVR', 'TECH', 'TLV']
 
         institutions_dict = {}
 
@@ -57,28 +58,41 @@ class Data:
             collection = db[collection_name]
 
             institutions_dict[collection_name] = {}
-            institutions_dict[collection_name]['max_sum'] = collection.find_one(sort=[("sum", DESCENDING)])["sum"] if not collection.find_one(sort=[("sum", DESCENDING)])["sum"] is None else 0
-            institutions_dict[collection_name]['min_sum'] = collection.find_one(sort=[("sum", ASCENDING)])["sum"] if not collection.find_one(sort=[("sum", ASCENDING)])["sum"] is None else 0
-            institutions_dict[collection_name]['max_psy'] = collection.find_one(sort=[("psychometric", DESCENDING)])["psychometric"] if not collection.find_one(sort=[("psychometric", DESCENDING)])["psychometric"] is None else 0
-            institutions_dict[collection_name]['min_psy'] = collection.find_one(sort=[("psychometric", ASCENDING)])["psychometric"] if not collection.find_one(sort=[("psychometric", ASCENDING)])["psychometric"] is None else 0
+            non_null_documents = collection.find({"sum": {"$ne": None}})
+
+            # calculate the min, max, and average values for the "sum" field
+            sum_values = [doc["sum"] for doc in non_null_documents] + [1, 0]
+            institutions_dict[collection_name]['min_sum'] = min(sum_values)
+            institutions_dict[collection_name]['max_sum'] = max(sum_values)
+            institutions_dict[collection_name]['avg_sum'] = sum(sum_values) / len(sum_values)
+
+            non_null_documents = collection.find({"psychometric": {"$ne": None}})
+
+            psychometric_values = [doc["psychometric"] for doc in non_null_documents] + [1, 0]
+            institutions_dict[collection_name]['max_psy'] = max(psychometric_values)
+            institutions_dict[collection_name]['min_psy'] = min(psychometric_values)
+            institutions_dict[collection_name]['avg_psy'] = sum(psychometric_values) / len(psychometric_values)
 
         return institutions_dict
 
-    def comper(self, result):
+    def difficukty_comper(self, result):
         min_max = self.get_the_min_and_max()
         score = 0
         if not result['sum'] is None:
-            sum = (result['sum'] - min_max[result['institutions']]['min_sum']) * (100 - 1) / (min_max[result['institutions']]['max_sum'] - min_max[result['institutions']]['min_sum']) + 1
+            sum = (result['sum'] - min_max[result['institutions']]['min_sum']) * (100 - 1) / (
+                    min_max[result['institutions']]['max_sum'] - min_max[result['institutions']]['min_sum']) + 1
         else:
             sum = 0
 
         if not result['psychometric'] is None:
-            psychometric = (result['psychometric'] - min_max[result['institutions']]['min_psy']) * (100 - 1) / (min_max[result['institutions']]['max_psy'] - min_max[result['institutions']]['min_sum']) + 1
+            psychometric = (result['psychometric'] - min_max[result['institutions']]['min_psy']) * (100 - 1) / (
+                    min_max[result['institutions']]['max_psy'] - min_max[result['institutions']]['min_sum']) + 1
         else:
             psychometric = 0
 
         additional = result['additional'] if not result['additional'] is None else False
-        min_final_grade_average = result['min_final_grade_average'] if not result['min_final_grade_average'] is None else 0
+        min_final_grade_average = result['min_final_grade_average'] if not result[
+                                                                               'min_final_grade_average'] is None else 0
         without = True if not result['without'] is None else False
         score += sum + psychometric
         if additional:
@@ -89,7 +103,7 @@ class Data:
             score -= 10
         return score
 
-    def get_all_data(self, names, collection_names, sort):
+    def get_all_data(self, names, collection_names, sort_type, high_to_low):
         client = MongoClient('mongodb://localhost:27017')
 
         # initialize a list to hold all the matching documents
@@ -103,8 +117,14 @@ class Data:
                 d["institutions"] = collection_name
                 matching_docs.append(d)
 
-        if sort:
-            matching_docs = sorted(matching_docs, key=self.comper, reverse=True)
+        if sort_type == 'Sort by difficulty':
+            matching_docs = sorted(matching_docs, key=self.difficukty_comper, reverse=high_to_low)
+        elif sort_type == 'Sort by sum':
+            matching_docs = sorted(matching_docs, key=lambda x: x['sum'] if not x['sum'] is None else 0, reverse=high_to_low)
+        elif sort_type == 'Sort by psychometric':
+            matching_docs = sorted(matching_docs, key=lambda x: x['psychometric']if not x['psychometric'] is None else 0, reverse=high_to_low)
+        else:
+            random.shuffle(matching_docs)
 
         return matching_docs
 
@@ -180,7 +200,8 @@ class Data:
             try:
                 result = Admission(name=cols[0].text.strip(), sum=self.convert_to_num(cols[1].text),
                                    min_final_grade_average=self.convert_to_num(cols[2].text),
-                                   additional=True, psychometric=self.convert_to_num(cols[3].text), notes=cols[4].text.strip(),
+                                   additional=True, psychometric=self.convert_to_num(cols[3].text),
+                                   notes=cols[4].text.strip(),
                                    date=datetime.datetime.today().strftime('%d/%m/%Y'))
             except:
                 continue

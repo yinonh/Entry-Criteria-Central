@@ -1,5 +1,4 @@
 import streamlit as st
-# import time
 from streamlit_pills_multiselect import pills
 
 from Screens.Screen import Screen
@@ -70,6 +69,7 @@ class Search(Screen):
           <button class="w3-button w3-light-grey">{psychometric} :פסיכומטרי</button>
         </div>
       </div>
+      <br><br>
     </div>
   </body>
 </html>
@@ -77,13 +77,15 @@ class Search(Screen):
 
     def build(self):
 
-        st.title("Search")
+        st.markdown("# <strong>Search</strong>", unsafe_allow_html=True)
         selected = pills("Chose:", [i[0] for i in institutions_dict.values()], index=None, multiselect=True,
                          clearable=True)
         result = st.multiselect(label='Enter what you want to learn:', options=set(self.data.get_all_professions()))
-        is_check = st.checkbox(label='Sort by difficulty')
+        sort_type = st.radio(label='chose sort type:', options=['Sort by difficulty', 'Sort by sum', 'Sort by psychometric'], horizontal=True)
+        high_to_low = st.checkbox(label='High to low', value=True)
 
         search_button = st.button('Search', on_click=self.press)
+        st.write('\n')
 
         if search_button:
             selected_list = []
@@ -91,13 +93,12 @@ class Search(Screen):
                 selected_list = list(
                     map(lambda x: next((k for k, v in institutions_dict.items() if x in v), None), selected))
 
-            data = self.data.get_all_data(result, selected_list, is_check)
+            data = self.data.get_all_data(result, selected_list, sort_type, high_to_low)
 
             for row in data:
                 self.card(name=row['name'], institutions=row['institutions'], sum=row['sum'], additional=row['additional'],
                           psychometric=row['psychometric'], notes=row['notes'],
                           min_final_grade_average=row['min_final_grade_average'], without=row['without'])
-                st.write('\n')
 
     def press(self):
         pass

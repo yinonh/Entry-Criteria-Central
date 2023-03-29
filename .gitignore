@@ -1,1 +1,15 @@
-.idea/*
+# PyCharm files
+.idea/
+
+# Compiled Python files
+*.pyc
+
+# Logs
+*.log
+
+# Other temporary files
+__pycache__/
+*.swp
+*.bak
+*.pyo
+*.~*

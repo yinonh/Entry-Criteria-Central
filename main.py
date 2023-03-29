@@ -1,10 +1,11 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from streamlit_theme import set_theme
-from streamlit_pandas_profiling import st_profile_report
+# from streamlit_theme import set_theme
+# from streamlit_pandas_profiling import st_profile_report
 
 from Screens.HomeScreen import HomePage
 from Screens.Search import Search
+from Screens.Calculator import Calculator
 from Data.DB import Data
 
 IMAGE_PATH = "Assets/image.png"
@@ -24,10 +25,9 @@ class Managment:
             st.image(IMAGE_PATH)
             st.title("Entry Criteria Central")
             choice = option_menu(menu_title=None,
-                                 options=[HomePage.name, Search.name],# , 'Humanities', 'Engineering', 'Natural sciences',
+                                 options=[HomePage.name, Search.name, Calculator.name],# , 'Humanities', 'Engineering', 'Natural sciences',
                                          # 'Health Sciences'],
-                                 icons=[HomePage.icon, Search.icon, 'people-fill', 'gear-fill', 'tree-fill',
-                                        'bandaid-fill'], default_index=1)
+                                 icons=[HomePage.icon, Search.icon, Calculator.icon], default_index=0)
             st.info("Welcome to the website")
 
         if choice == HomePage.name:
@@ -36,6 +36,10 @@ class Managment:
 
         elif choice == Search.name:
             window = Search(self.data)
+            window.build()
+
+        elif choice == Calculator.name:
+            window = Calculator(self.data)
             window.build()
 
 
