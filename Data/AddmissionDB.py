@@ -2,14 +2,17 @@ from pymongo import MongoClient, DESCENDING, ASCENDING
 from bs4 import BeautifulSoup
 import requests
 from .Admission import Admission
+from .Data import Data
 import datetime
 import random
 
 
-class Data:
+class AdmissionDB(Data):
 
     def __init__(self, *args, **kwargs):
         super(Data, self).__init__(*args, **kwargs)
+        self.client_name = "AdmissionDB"
+        self.db_url = 'mongodb://localhost:27017'
 
     def compare_dicts(self, dict1, dict2):
         for key in dict1:
@@ -19,34 +22,25 @@ class Data:
                 return False
         return True
 
-    def convert_to_num(self, str_number):
-        if str_number.strip() == '':
-            return None
-        else:
-            try:
-                return int(str_number.strip())
-            except:
-                return float(str_number.strip())
-
     def get_all_professions(self):
-        client = MongoClient('mongodb://localhost:27017')
+        client = MongoClient(self.db_url)
 
         # get a list of all the collection names
-        collection_names = client['mydatabase'].list_collection_names()
+        collection_names = client[self.client_name].list_collection_names()
 
         all_professions = []
 
         # iterate over each collection and get the distinct values for the name key
         for collection_name in collection_names:
-            collection = client['mydatabase'][collection_name]
+            collection = client[self.client_name][collection_name]
             names = collection.distinct('name')
             all_professions.extend(names)
         return all_professions
 
     def get_the_min_and_max(self):
         # Connect to the MongoDB server
-        client = MongoClient("mongodb://localhost:27017/")
-        db = client["mydatabase"]
+        client = MongoClient(self.db_url)
+        db = client[self.client_name]
 
         # Define the collections to query
         collections = ['BGU', 'EVR', 'TECH', 'TLV']
@@ -104,14 +98,14 @@ class Data:
         return score
 
     def get_all_data(self, names, collection_names, sort_type, high_to_low):
-        client = MongoClient('mongodb://localhost:27017')
+        client = MongoClient(self.db_url)
 
         # initialize a list to hold all the matching documents
         matching_docs = []
 
         # iterate over each collection and find all documents with a name in the list
         for collection_name in collection_names:
-            collection = client['mydatabase'][collection_name]
+            collection = client[self.client_name][collection_name]
             docs = collection.find({'name': {'$in': names}})
             for d in docs:
                 d["institutions"] = collection_name
@@ -127,33 +121,6 @@ class Data:
             random.shuffle(matching_docs)
 
         return matching_docs
-
-    def insert_data(self, data, collection_name):
-        # create a new MongoClient object
-        client = MongoClient('mongodb://localhost:27017/')
-
-        # access the database
-        db = client['mydatabase']
-
-        # # access a collection (table)
-        collection = db[collection_name]
-
-        for row in data:
-            # check if the document with the given name already exists
-            existing_doc = collection.find_one({'name': row['name']})
-
-            if existing_doc:
-                # if the document exists, check if the data is different
-                if not self.compare_dicts(existing_doc, row):
-                    # if the data is different, update the document
-                    collection.replace_one({'name': row['name']}, row)
-                    print('Document updated.')
-                else:
-                    print('Document already exists.')
-            else:
-                # if the document does not exist, insert it
-                collection.insert_one(row)
-                print('Document inserted.')
 
     def bgu_data(self):
         soup = BeautifulSoup(requests.get(

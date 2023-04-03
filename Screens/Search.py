@@ -81,7 +81,7 @@ class Search(Screen):
         selected = pills("Chose:", [i[0] for i in institutions_dict.values()], index=None, multiselect=True,
                          clearable=True)
         result = st.multiselect(label='Enter what you want to learn:', options=set(self.data.get_all_professions()))
-        sort_type = st.radio(label='chose sort type:', options=['Sort by difficulty', 'Sort by sum', 'Sort by psychometric'], horizontal=True)
+        sort_type = st.radio(label='chose sort type:', options=['don\'t sort', 'Sort by difficulty', 'Sort by sum', 'Sort by psychometric'], horizontal=True)
         high_to_low = st.checkbox(label='High to low', value=True)
 
         search_button = st.button('Search', on_click=self.press)

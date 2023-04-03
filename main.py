@@ -6,7 +6,7 @@ from streamlit_option_menu import option_menu
 from Screens.HomeScreen import HomePage
 from Screens.Search import Search
 from Screens.Calculator import Calculator
-from Data.DB import Data
+from Data.AddmissionDB import AdmissionDB
 
 IMAGE_PATH = "Assets/image.png"
 THEAM_COLOR = "#5777b3"
@@ -16,7 +16,7 @@ class Managment:
 
     def __init__(self, *args, **kwargs):
         super(Managment, self).__init__(*args, **kwargs)
-        self.data = Data()
+        self.data = AdmissionDB()
         #self.data.update_all()
 
         st.set_page_config(page_title="My Streamlit App", page_icon="Assets/icon.ico")#, layout="wide")
