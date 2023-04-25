@@ -2,6 +2,8 @@ import streamlit as st
 from streamlit_pills_multiselect import pills
 
 from Screens.Screen import Screen
+# import networkx as nx
+# import matplotlib.pyplot as plt
 
 THEAM_COLOR = "#5777b3"
 
@@ -75,6 +77,7 @@ class Search(Screen):
 </html>
 """, unsafe_allow_html=True)
 
+
     def build(self):
 
         st.markdown("# <strong>Search</strong>", unsafe_allow_html=True)
@@ -94,7 +97,6 @@ class Search(Screen):
                     map(lambda x: next((k for k, v in institutions_dict.items() if x in v), None), selected))
 
             data = self.data.get_all_data(result, selected_list, sort_type, high_to_low)
-
             for row in data:
                 self.card(name=row['name'], institutions=row['institutions'], sum=row['sum'], additional=row['additional'],
                           psychometric=row['psychometric'], notes=row['notes'],
