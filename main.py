@@ -30,9 +30,9 @@ class Managment:
             st.image(IMAGE_PATH)
             st.title("Entry Criteria Central")
             choice = option_menu(menu_title=None,
-                                 options=[HomePage.name, Search.name, Calculator.name, GraphScreen.name],# , 'Humanities', 'Engineering', 'Natural sciences',
+                                 options=[HomePage.name, Search.name, GraphScreen.name, Calculator.name],# , 'Humanities', 'Engineering', 'Natural sciences',
                                          # 'Health Sciences'],
-                                 icons=[HomePage.icon, Search.icon, Calculator.icon, GraphScreen.icon], default_index=0)
+                                 icons=[HomePage.icon, Search.icon, GraphScreen.icon, Calculator.icon], default_index=0)
             st.info("Welcome to the website")
 
         if choice == HomePage.name:
