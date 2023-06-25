@@ -1,12 +1,12 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-# from streamlit_theme import set_theme
-# from streamlit_pandas_profiling import st_profile_report
+import pandas as pd
 
 from Screens.HomeScreen import HomePage
 from Screens.Search import Search
 from Screens.Calculator import Calculator
 from Screens.Graph import GraphScreen
+from Screens.Reviews import Reviews
 # from Data.ReviewDB import Data
 from Data.AddmissionDB import AdmissionDB
 
@@ -30,9 +30,9 @@ class Managment:
             st.image(IMAGE_PATH)
             st.title("Entry Criteria Central")
             choice = option_menu(menu_title=None,
-                                 options=[HomePage.name, Search.name, GraphScreen.name, Calculator.name],# , 'Humanities', 'Engineering', 'Natural sciences',
+                                 options=[HomePage.name, Search.name, GraphScreen.name, Calculator.name, Reviews.name],# , 'Humanities', 'Engineering', 'Natural sciences',
                                          # 'Health Sciences'],
-                                 icons=[HomePage.icon, Search.icon, GraphScreen.icon, Calculator.icon], default_index=0)
+                                 icons=[HomePage.icon, Search.icon, GraphScreen.icon, Calculator.icon, Reviews.icon], default_index=0)
             st.info("Welcome to the website")
 
         if choice == HomePage.name:
@@ -49,6 +49,12 @@ class Managment:
 
         elif choice == GraphScreen.name:
             self.window = GraphScreen(self.data)
+            self.window.build()
+
+        elif choice == Reviews.name:
+            data_path = 'Data/review.csv'
+            df = pd.read_csv(data_path)
+            self.window = Reviews(df)
             self.window.build()
 
 
