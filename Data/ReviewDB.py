@@ -153,6 +153,19 @@ class ReviewDB(Data):
         self.collect_data(
             'https://www.thestudent.co.il/school94_%d7%94%d7%98%d7%9b%d7%a0%d7%99%d7%95%d7%9f',
             "school94", 'TECH')  # TECH
+        self.collect_data(
+            'https://www.thestudent.co.il/school102_%d7%a1%d7%9e%d7%99_%d7%a9%d7%9e%d7%a2%d7%95%d7%9f',
+            "school102", 'SCE')  # SCE
+        self.collect_data(
+            'https://www.thestudent.co.il/school69_%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%aa_%d7%90%d7%a8%d7%99%d7%90%d7%9c',
+            "school69", 'ARIEL')  # ARIEL
+        self.collect_data(
+            'https://www.thestudent.co.il/school106_%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%aa_%d7%91%d7%a8_%d7%90%d7%99%d7%9c%d7%9f',
+            "school106", 'BAREILAN')  # BAREILAN
+        self.collect_data(
+            'https://www.thestudent.co.il/school83_%d7%94%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%94_%d7%94%d7%a4%d7%aa%d7%95%d7%97%d7%94',
+            "school83", 'OPEN')  # OPEN
+
 
 x = ReviewDB()
 x.update_all()

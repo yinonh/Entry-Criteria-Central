@@ -36,7 +36,7 @@ class Reviews(Screen):
         for i, column in enumerate(columns):
             ax = axs[i]
             value_counts = filtered_df[column].value_counts()
-            labels = value_counts.index.tolist()
+            labels = list(map(lambda x: int(x),value_counts.index.tolist()))
             sizes = value_counts.values.tolist()
             ax.pie(sizes, labels=labels, autopct='%1d%%')
             ax.set_title(column)
@@ -50,14 +50,14 @@ class Reviews(Screen):
         col1, col2, col3 = st.columns(spec=3)
 
         with col1:
-            st.markdown(filtered_df['rating_value'].mean())
+            st.markdown("ממוצע ההצבעות של האנשים: %.2f" % filtered_df['rating_value'].mean())
         with col2:
-            st.markdown(filtered_df['expectations_grade'].mean())
+            st.markdown("ממוצע העמידה בציפיות: %.2f" % filtered_df['expectations_grade'].mean())
         with col3:
-            st.markdown(filtered_df['level_grade'].mean())
+            st.markdown("ממוצע רמת הלימודים: %.2f" % filtered_df['level_grade'].mean())
 
         # Display random advice from previous students
-        st.markdown('## Advice from Previous Students:')
+        st.markdown('## Insights Shared by Former Students:')
         advice_samples = random.sample(list(filtered_df['advice']), k=4)
         for advice in advice_samples:
             st.markdown("""<div style="text-align: right;">""" + advice + """</div>""", unsafe_allow_html=True)
