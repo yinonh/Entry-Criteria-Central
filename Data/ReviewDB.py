@@ -143,28 +143,28 @@ class ReviewDB(Data):
             os.remove('reviews.csv')
 
         self.collect_data('https://www.thestudent.co.il/school91_%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%aa_%d7%91%d7%9f_%d7%92%d7%95%d7%a8%d7%99%d7%95%d7%9f',
-                          "school91", 'BGU')  # BGU
+                          "school91", 'בן גוריון')  # BGU
         self.collect_data(
             'https://www.thestudent.co.il/school93_%d7%94%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%94_%d7%94%d7%a2%d7%91%d7%a8%d7%99%d7%aa',
-                          "school93", 'EVR')  # EVR
+                          "school93", 'העברית')  # EVR
         self.collect_data(
             'https://www.thestudent.co.il/school90_%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%aa_%d7%aa%d7%9c_%d7%90%d7%91%d7%99%d7%91',
-            "school90", 'TLV')  # TLV
+            "school90", 'אוניברסיטת תל אביב')  # TLV
         self.collect_data(
             'https://www.thestudent.co.il/school94_%d7%94%d7%98%d7%9b%d7%a0%d7%99%d7%95%d7%9f',
-            "school94", 'TECH')  # TECH
+            "school94", 'הטכניון')  # TECH
         self.collect_data(
             'https://www.thestudent.co.il/school102_%d7%a1%d7%9e%d7%99_%d7%a9%d7%9e%d7%a2%d7%95%d7%9f',
-            "school102", 'SCE')  # SCE
+            "school102", 'סמי שמעון')  # SCE
         self.collect_data(
             'https://www.thestudent.co.il/school69_%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%aa_%d7%90%d7%a8%d7%99%d7%90%d7%9c',
-            "school69", 'ARIEL')  # ARIEL
+            "school69", 'אריאל')  # ARIEL
         self.collect_data(
             'https://www.thestudent.co.il/school106_%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%aa_%d7%91%d7%a8_%d7%90%d7%99%d7%9c%d7%9f',
-            "school106", 'BAREILAN')  # BAREILAN
+            "school106", 'בר אילן')  # BAREILAN
         self.collect_data(
             'https://www.thestudent.co.il/school83_%d7%94%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%94_%d7%94%d7%a4%d7%aa%d7%95%d7%97%d7%94',
-            "school83", 'OPEN')  # OPEN
+            "school83", 'הפתוחה')  # OPEN
 
 
 x = ReviewDB()

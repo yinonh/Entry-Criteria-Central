@@ -30,16 +30,19 @@ class Reviews(Screen):
         filtered_df = self.filter_data(selected_institute, selected_field)
 
         # Create pie charts for the selected data
-        fig, axs = plt.subplots(1, 3, figsize=(15, 5))
-        columns = ['rating_value', 'expectations_grade', 'level_grade']
+        fig, axs = plt.subplots(2, 2, figsize=(25, 15))
+        columns = ['rating_value', 'predictions', 'expectations_grade', 'level_grade']
 
         for i, column in enumerate(columns):
-            ax = axs[i]
+            ax = axs[i // 2, i % 2]  # Access the correct axis from the subplots grid
             value_counts = filtered_df[column].value_counts()
-            labels = list(map(lambda x: int(x),value_counts.index.tolist()))
+            labels = list(map(lambda x: int(x), value_counts.index.tolist()))
             sizes = value_counts.values.tolist()
-            ax.pie(sizes, labels=labels, autopct='%1d%%')
-            ax.set_title(column)
+            ax.pie(sizes, labels=labels, autopct='%1d%%', textprops={'fontsize': 20})
+            ax.set_title(column, fontsize=20)
+
+            # Add text at the bottom of the plot
+            ax.text(0.5, -0.15, 'Avg: %f\n' % filtered_df[column].mean(), transform=ax.transAxes, ha='center', fontsize=20)
 
         # Adjust spacing between subplots
         plt.tight_layout()
@@ -47,14 +50,16 @@ class Reviews(Screen):
         # Display the pie charts in Streamlit
         st.pyplot(fig)
 
-        col1, col2, col3 = st.columns(spec=3)
-
-        with col1:
-            st.markdown("ממוצע ההצבעות של האנשים: %.2f" % filtered_df['rating_value'].mean())
-        with col2:
-            st.markdown("ממוצע העמידה בציפיות: %.2f" % filtered_df['expectations_grade'].mean())
-        with col3:
-            st.markdown("ממוצע רמת הלימודים: %.2f" % filtered_df['level_grade'].mean())
+        # col1, col2, col3, col4 = st.columns(spec=4)
+        #
+        # with col1:
+        #     st.markdown("ממוצע ההצבעות של האנשים: %.2f" % filtered_df['rating_value'].mean())
+        # with col2:
+        #     st.markdown("ממוצע מנותח: %.2f" % filtered_df['predictions'].mean())
+        # with col3:
+        #     st.markdown("ממוצע העמידה בציפיות: %.2f" % filtered_df['expectations_grade'].mean())
+        # with col4:
+        #     st.markdown("ממוצע רמת הלימודים: %.2f" % filtered_df['level_grade'].mean())
 
         # Display random advice from previous students
         st.markdown('## Insights Shared by Former Students:')
