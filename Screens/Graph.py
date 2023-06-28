@@ -3,6 +3,7 @@ import streamlit as st
 from Screens.Screen import Screen
 import networkx as nx
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 THEAM_COLOR = "#5777b3"
 
@@ -39,15 +40,24 @@ class GraphScreen(Screen):
         result = st.multiselect(label='Enter what you want to learn:', options=set(self.data.get_all_professions()))
 
         search_button = st.button('Create Graph')
-        st.write('\n')
+        st.markdown("<br>", unsafe_allow_html=True)
 
         if search_button:
             data = self.data.get_all_data(result, [i[0] for i in institutions_dict.items()], None, False)
             G = self.create_graph(data)
             pos = nx.spring_layout(G)
             node_colors = self.color_for_node(G)
-            nx.draw(G, pos, with_labels=True, node_color=node_colors)
-            st.pyplot(plt)
+            fig, ax = plt.subplots(figsize=(8, 6))
+            nx.draw(G, pos, with_labels=True, node_color=node_colors, node_size=500, font_size=10,
+                    font_color='black', edge_color='black', width=0.8)
+            ax.set_title("Graph Representation", fontsize=16)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['bottom'].set_visible(False)
+            ax.spines['left'].set_visible(False)
+            st.pyplot(fig)
 
     def color_for_node(self, G):
         colors = {'BGU': '#ff9800', 'EVR': '#ddffdd', 'TECH': '#ddffff', 'TLV': '#f0e68c'}
