@@ -1,8 +1,9 @@
 import streamlit as st
-import plotly.express as px
 from Screens.Screen import Screen
+
 import pandas as pd
-import base64
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 class HomePage(Screen):
@@ -21,26 +22,34 @@ class HomePage(Screen):
             with col:
                 st.image(institutions_images[index], width=100)
 
-        st.write('\n\n')
+        st.markdown('<br><br><br>', unsafe_allow_html=True)
 
-        data = self.data.get_the_min_and_max()
 
-        # Convert data to DataFrame for easier plotting
-        df = pd.DataFrame.from_dict(data, orient="index")
+        # Group the DataFrame by 'institute' and count the unique values in 'field' column
+        grouped = self.data.groupby('institute')['field'].nunique().sort_values(ascending=False)
 
-        # Plot bar chart using Plotly
-        fig = px.bar(
-            df,
-            x=df.index,
-            y=["min_sum", "max_sum", "avg_sum", "max_psy", "min_psy", "avg_psy"],
-            color_discrete_sequence=px.colors.qualitative.Dark2,
-            title="Summary Statistics",
-            labels={
-                "variable": "Summary Statistic",
-                "value": "Value",
-            },
-        )
+        # Reverse the text in x-axis labels
+        reversed_labels = [label[::-1] for label in grouped.index]
 
-        # Display chart in Streamlit app
-        st.plotly_chart(fig)
+        # Set the style using Seaborn
+        sns.set(style="whitegrid")
+
+        # Create a bar plot
+        plt.figure(figsize=(12, 6))
+        sns.barplot(x=reversed_labels, y=grouped.values, palette="viridis")
+
+        # Customize the plot
+        plt.title("Number of Unique Fields per Institute", fontsize=16)
+        plt.xlabel("Institute", fontsize=12)
+        plt.ylabel("Number of Unique Fields", fontsize=12)
+        plt.xticks(rotation=45, ha='right', fontsize=10)
+        plt.yticks(fontsize=10)
+
+        # Add data labels to the bars
+        for i, v in enumerate(grouped.values):
+            plt.text(i, v + 0.2, str(v), ha='center', va='bottom', fontsize=10)
+
+        # Display the plot in Streamlit page
+        st.pyplot(plt)
+
 

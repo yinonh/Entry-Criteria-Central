@@ -36,7 +36,9 @@ class Managment:
             st.info("Welcome to the website")
 
         if choice == HomePage.name:
-            self.window = HomePage(self.data)
+            data_path = 'Data/review.csv'
+            df = pd.read_csv(data_path)
+            self.window = HomePage(df)
             self.window.build()
 
         elif choice == Search.name:
