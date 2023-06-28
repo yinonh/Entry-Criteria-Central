@@ -143,28 +143,49 @@ class ReviewDB(Data):
             os.remove('reviews.csv')
 
         self.collect_data('https://www.thestudent.co.il/school91_%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%aa_%d7%91%d7%9f_%d7%92%d7%95%d7%a8%d7%99%d7%95%d7%9f',
-                          "school91", 'בן גוריון')  # BGU
+                          "school91", 'בן גוריון')
         self.collect_data(
             'https://www.thestudent.co.il/school93_%d7%94%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%94_%d7%94%d7%a2%d7%91%d7%a8%d7%99%d7%aa',
-                          "school93", 'העברית')  # EVR
+                          "school93", 'העברית')
         self.collect_data(
             'https://www.thestudent.co.il/school90_%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%aa_%d7%aa%d7%9c_%d7%90%d7%91%d7%99%d7%91',
-            "school90", 'אוניברסיטת תל אביב')  # TLV
+            "school90", 'אוניברסיטת תל אביב')
         self.collect_data(
             'https://www.thestudent.co.il/school94_%d7%94%d7%98%d7%9b%d7%a0%d7%99%d7%95%d7%9f',
-            "school94", 'הטכניון')  # TECH
+            "school94", 'הטכניון')
         self.collect_data(
             'https://www.thestudent.co.il/school102_%d7%a1%d7%9e%d7%99_%d7%a9%d7%9e%d7%a2%d7%95%d7%9f',
-            "school102", 'סמי שמעון')  # SCE
+            "school102", 'סמי שמעון')
         self.collect_data(
             'https://www.thestudent.co.il/school69_%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%aa_%d7%90%d7%a8%d7%99%d7%90%d7%9c',
-            "school69", 'אריאל')  # ARIEL
+            "school69", 'אריאל')
         self.collect_data(
             'https://www.thestudent.co.il/school106_%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%aa_%d7%91%d7%a8_%d7%90%d7%99%d7%9c%d7%9f',
-            "school106", 'בר אילן')  # BAREILAN
+            "school106", 'בר אילן')
         self.collect_data(
             'https://www.thestudent.co.il/school83_%d7%94%d7%90%d7%95%d7%a0%d7%99%d7%91%d7%a8%d7%a1%d7%99%d7%98%d7%94_%d7%94%d7%a4%d7%aa%d7%95%d7%97%d7%94',
-            "school83", 'הפתוחה')  # OPEN
+            "school83", 'הפתוחה')
+        self.collect_data(
+            'https://www.thestudent.co.il/school72_%d7%94%d7%9e%d7%a8%d7%9b%d7%96_%d7%94%d7%91%d7%99%d7%a0%d7%aa%d7%97%d7%95%d7%9e%d7%99',
+            "school72", 'המרכז הבינתחומי')
+        self.collect_data(
+            'https://www.thestudent.co.il/school194_%d7%9e%d7%9b%d7%9c%d7%9c%d7%aa_%d7%90%d7%a4%d7%a7%d7%94',
+            "school194", 'אפקה')
+        self.collect_data(
+            'https://www.thestudent.co.il/school200_%d7%91%d7%a6%d7%9c%d7%90%d7%9c',
+            "school200", 'בצלאל')
+        self.collect_data(
+            'https://www.thestudent.co.il/school87_%d7%9e%d7%9b%d7%9c%d7%9c%d7%aa_%d7%90%d7%a9%d7%a7%d7%9c%d7%95%d7%9f',
+            "school87", 'מכללת אשקלון')
+        self.collect_data(
+            'https://www.thestudent.co.il/school87_%d7%9e%d7%9b%d7%9c%d7%9c%d7%aa_%d7%90%d7%a9%d7%a7%d7%9c%d7%95%d7%9f',
+            "school87", 'מכללת אשקלון')
+        self.collect_data(
+            'https://www.thestudent.co.il/school79_%d7%9e%d7%9b%d7%9c%d7%9c%d7%aa_%d7%a1%d7%a4%d7%99%d7%a8',
+            "school79", 'ספיר')
+        self.collect_data(
+            'https://www.thestudent.co.il/school66_%d7%94%d7%a7%d7%a8%d7%99%d7%94_%d7%94%d7%90%d7%a7%d7%93%d7%9e%d7%99%d7%aa_%d7%90%d7%95%d7%a0%d7%95',
+            "school66", 'אונו')
 
 
 x = ReviewDB()
